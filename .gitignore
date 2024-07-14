@@ -6,4 +6,8 @@
 **/WindowsNoEditor/*
 **/Windows/*
 **/DerivedDataCache/*
+
+# Visual Studio
 **/.vs/*
+**/enc_temp_folder/*
+**/.user
