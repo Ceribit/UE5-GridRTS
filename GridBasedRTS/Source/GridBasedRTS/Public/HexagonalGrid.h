@@ -7,6 +7,7 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/Classes/Components/InstancedStaticMeshComponent.h" 
 #include "Kismet/KismetMathLibrary.h"
+#include "TileData.h"
 #include "HexagonalGrid.generated.h"
 
 UCLASS()
@@ -18,6 +19,20 @@ public:
 	// Sets default values for this actor's properties
 	AHexagonalGrid();
 
+	UFUNCTION(BlueprintCallable)
+	void GenerateGrid(bool isHexagonal);
+
+	UFUNCTION(BlueprintCallable)
+	void SetGridParameters(float NewMapSize, float NewTileSize);
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseOffsetAdjust();
+	
+	UFUNCTION(BlueprintCallable)
+	bool IsHoveringTile(FVector HitLocation);
+
+	void AddTile(float x, float y);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,8 +43,15 @@ public:
 
 	int height;
 	int width;
-	TMap<FVector2D,FTransform> tileData;
+	int MapSize = 1;
+	float TileSize = 170.f;
+	float OffsetAdjust = 0.1f;
 
+	TMap<FVector,FTileData> TileDataMap;
+
+	// MapSize, TileSize
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
+	//FVector<float> GridInfo(0.f,0.f,0.f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid")
 	UInstancedStaticMeshComponent* InstancedStaticMeshComponent;

@@ -16,6 +16,7 @@ ABasicPawn::ABasicPawn()
 	//SpringArmComp->SetWorldLocation(FVector(0, 0, 0));
 	SpringArmComp->SetupAttachment(GetRootComponent());
 	SpringArmComp->SetRelativeRotation(FRotator(-45.f, 0.0f, 0.f));
+
 	//GetRootComponent()->SetRelativeRotation(FRotator(0.0f, 0.0f, 0.0f));
 
 	SpringArmComp->TargetArmLength = 700.0f;
