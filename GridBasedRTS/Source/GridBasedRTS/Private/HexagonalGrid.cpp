@@ -2,6 +2,7 @@
 
 
 #include "HexagonalGrid.h"
+#include <algorithm>
 
 // Sets default values
 AHexagonalGrid::AHexagonalGrid()
@@ -28,11 +29,66 @@ void AHexagonalGrid::SetGridParameters(float NewMapSize, float NewTileScale) {
 	TileScale = NewTileScale;
 }
 
-bool AHexagonalGrid::IsHoveringTile(FVector HitLocation) {
-	return true;
+FIntPoint AxialRound(float x, float y) {
+	const int xgrid = std::round(x), ygrid = std::round(y);
+	x -= xgrid;
+	y -= ygrid;
+	if (std::abs(x) >= std::abs(y)) {
+		return FIntPoint(xgrid + round(x + 0.5 * y), ygrid);
+	}
+	else {
+		return FIntPoint(xgrid, ygrid + round(y + 0.5 * x));
+	}
 }
 
-TMap<FVector, FTileData> AHexagonalGrid::GetTileDataMap() {
+FIntPoint hexToFlatCoordinates(FVector hex)
+{
+	FIntPoint coordinates;
+	coordinates.X = hex.X;
+	coordinates.Y = hex.Z;
+	return coordinates;
+}
+
+FIntPoint axialToOffsetCoordinates(FIntPoint axial)
+{
+	FIntPoint offset;
+	offset.X = axial.X;
+	offset.Y = axial.Y + ceilf((float)axial.X / 2.0);
+	return offset;
+}
+
+FIntPoint AHexagonalGrid::GetTileIndexFromMousePosition(FVector HitLocation) {
+	float radius = TILE_SIZE;
+	float a = HitLocation.X;
+	float b = HitLocation.Y;
+
+	float x = 2.0 / 3.0 * a / radius;
+	float z = (1.0 / 3.0 * sqrt(3.0) * b - 1.0 / 3.0 * a) / radius;
+	float y = -x - z;
+
+	int ix = (int)round((floor(x - y) - floor(z - x)) / 3.0);
+	int iy = (int)round((floor(y - z) - floor(x - y)) / 3.0);
+	int iz = (int)round((floor(z - x) - floor(y - z)) / 3.0);
+
+	FIntPoint Corrected = hexToFlatCoordinates(FVector(ix, iy, iz));
+	//Corrected.X -= 1;
+	return axialToOffsetCoordinates(Corrected);
+	//const float dx = std::round(x + 0.5 * y) * (x * x >= y * y);
+	//const float dy = std::round(y + 0.5 * x) * (x * x < y* y);
+
+	//return FIntPoint((xgrid + dx) / TILE_SIZE / TileScale, (ygrid + dy) / TILE_SIZE / TileScale);
+
+
+	//int x = HitLocation.X / TILE_SIZE / TileScale / 1.5f;
+	//float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3) / 2;
+	//int y = (HitLocation.Y + Offset) / TILE_SIZE / TileScale / sqrt(3);
+	//return FIntPoint(x, y);
+	//int q = (sqrt(3) / 3 * HitLocation.X - 1. / 3 * HitLocation.Y) / TILE_SIZE / TileScale;
+	//int r = 2. / 3 * HitLocation.Y;
+	//return AxialToOffset(q, r);
+}
+
+TMap<FIntPoint, FTileData> AHexagonalGrid::GetTileDataMap() {
 	return TileDataMap;
 }
 
@@ -42,24 +98,41 @@ void AHexagonalGrid::GenerateGrid()
 	InstancedStaticMeshComponent->ClearInstances();
 	TileDataMap.Reset();
 
-	for (int x = -MapSize; x <= MapSize; x++) {
-		for (int y = -MapSize; y <= MapSize; y++){
-			AddTile(x,y);
+	for (int q = -MapSize; q <= MapSize; q++) {
+		int r1 = std::max(-MapSize, -q - MapSize);
+		int r2 = std::min(MapSize, -q + MapSize);
+
+		for (int r = r1; r <= r2; r++) {
+			// Convert RadialCoord to Offset
+			FIntPoint Index = AxialToOffset(q, r);
+			AddTile(Index);
+
 		}
 	}
-
-
-
+	//for (int x = -MapSize; x <= MapSize; x++) {
+	//	for (int y = -MapSize; y <= MapSize; y++){
+	//		AddTile(x,y);
+	//	}
 
 }
 
-void AHexagonalGrid::AddTile(int x, int y) {
-	float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3)/2;
-	FTransform transform(FRotator(0.f, 90.f, 0.f), FVector(TileScale * TILE_SIZE * x * 1.5, TileScale* TILE_SIZE * y * sqrt(3)+Offset, 0.1f), FVector(TileScale, TileScale, 1.f));
-	// relative_location_x = x * tileSize - (x * tileSize / 10) = 0.9 * x *tileSize -> x = relative_location / 0.9 / tileSize
-	// relative_location_x = y*TileSize+Offset
+FIntPoint AHexagonalGrid::AxialToOffset(int q, int r) {
+	int x = q;
+	int y = r + (q + (q % 2 == 1)) / 2;
+	return FIntPoint(x, y);
+}
 
-	TileDataMap.Add(FVector(x, y, 0),FTileData(FVector(x, y, 0), transform));
+FVector AHexagonalGrid::OffsetToAxial(FIntPoint Index) {
+	return FVector(0, 0, 0);
+}
+
+// Even-Q
+void AHexagonalGrid::AddTile(FIntPoint Index) {
+	int x = Index[0];
+	int y = Index[1];
+	float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3)/2;
+	FTransform transform(FRotator(0.f, 90.f, 0.f), FVector(TileScale * TILE_SIZE * x * 1.5, TileScale* TILE_SIZE * y * sqrt(3)-Offset, 0.1f), FVector(TileScale, TileScale, 1.f));
+	TileDataMap.Add(FIntPoint(x, y),FTileData(FIntPoint(x, y), transform));
 	InstancedStaticMeshComponent->AddInstance(transform);
 
 }

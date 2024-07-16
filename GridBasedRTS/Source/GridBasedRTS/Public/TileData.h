@@ -13,14 +13,21 @@
 USTRUCT(BlueprintType)
 struct FTileData
 {
-	GENERATED_BODY()
+	GENERATED_USTRUCT_BODY()
 
 public:
 	FTileData() {}
-	FTileData(FVector NewIndex, FTransform NewTransform);
+	FTileData(FIntPoint NewIndex, FTransform NewTransform);
 
 	UTileState TileState;
-	FVector Index;
+
+	UPROPERTY(BlueprintReadWrite)
+	FIntPoint Index;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector AxialCoord;
+
+	UPROPERTY(BlueprintReadWrite)
 	FTransform Transform;
 
 };

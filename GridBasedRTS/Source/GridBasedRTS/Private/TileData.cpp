@@ -3,7 +3,7 @@
 
 #include "TileData.h"
 
-FTileData::FTileData(FVector NewIndex, FTransform NewTransform) {
+FTileData::FTileData(FIntPoint NewIndex, FTransform NewTransform) {
 	TileState = UTileState::NONE;
 	Index = NewIndex;
 	Transform = NewTransform;
