@@ -20,18 +20,18 @@ public:
 	AHexagonalGrid();
 
 	UFUNCTION(BlueprintCallable)
-	void GenerateGrid(bool isHexagonal);
+	void GenerateGrid();
 
 	UFUNCTION(BlueprintCallable)
 	void SetGridParameters(float NewMapSize, float NewTileSize);
 
 	UFUNCTION(BlueprintCallable)
-	void IncreaseOffsetAdjust();
-	
-	UFUNCTION(BlueprintCallable)
 	bool IsHoveringTile(FVector HitLocation);
 
-	void AddTile(float x, float y);
+	UFUNCTION(BlueprintCallable)
+	TMap<FVector, FTileData> GetTileDataMap();
+
+	void AddTile(int x, int y);
 
 protected:
 	// Called when the game starts or when spawned
@@ -44,8 +44,8 @@ public:
 	int height;
 	int width;
 	int MapSize = 1;
-	float TileSize = 170.f;
-	float OffsetAdjust = 0.1f;
+	const float TILE_SIZE = 100.f;
+	float TileScale = 1.f;
 
 	TMap<FVector,FTileData> TileDataMap;
 
