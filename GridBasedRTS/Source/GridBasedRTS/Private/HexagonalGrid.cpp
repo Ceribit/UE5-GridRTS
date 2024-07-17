@@ -12,7 +12,7 @@ AHexagonalGrid::AHexagonalGrid()
 
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMeshComponent"));
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Movable);
-	InstancedStaticMeshComponent->SetCollisionProfileName("WalkableGround");
+	InstancedStaticMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel1, ECollisionResponse::ECR_Block);
 	//InstancedStaticMeshComponent->SetStaticMesh(StaticMesh.object);
 	//GridInfo = FVector(MapSize, TileSize, 0.f);
 
@@ -41,6 +41,7 @@ FIntPoint AxialRound(float x, float y) {
 	}
 }
 
+// TODO: Convert into a utility library
 FIntPoint hexToFlatCoordinates(FVector hex)
 {
 	FIntPoint coordinates;
@@ -49,6 +50,7 @@ FIntPoint hexToFlatCoordinates(FVector hex)
 	return coordinates;
 }
 
+// TODO: Convert into a utility library
 FIntPoint axialToOffsetCoordinates(FIntPoint axial)
 {
 	FIntPoint offset;
@@ -58,7 +60,7 @@ FIntPoint axialToOffsetCoordinates(FIntPoint axial)
 }
 
 FIntPoint AHexagonalGrid::GetTileIndexFromMousePosition(FVector HitLocation) {
-	float radius = TILE_SIZE;
+	float radius = TILE_SIZE * TileScale;
 	float a = HitLocation.X;
 	float b = HitLocation.Y;
 
@@ -73,19 +75,6 @@ FIntPoint AHexagonalGrid::GetTileIndexFromMousePosition(FVector HitLocation) {
 	FIntPoint Corrected = hexToFlatCoordinates(FVector(ix, iy, iz));
 	//Corrected.X -= 1;
 	return axialToOffsetCoordinates(Corrected);
-	//const float dx = std::round(x + 0.5 * y) * (x * x >= y * y);
-	//const float dy = std::round(y + 0.5 * x) * (x * x < y* y);
-
-	//return FIntPoint((xgrid + dx) / TILE_SIZE / TileScale, (ygrid + dy) / TILE_SIZE / TileScale);
-
-
-	//int x = HitLocation.X / TILE_SIZE / TileScale / 1.5f;
-	//float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3) / 2;
-	//int y = (HitLocation.Y + Offset) / TILE_SIZE / TileScale / sqrt(3);
-	//return FIntPoint(x, y);
-	//int q = (sqrt(3) / 3 * HitLocation.X - 1. / 3 * HitLocation.Y) / TILE_SIZE / TileScale;
-	//int r = 2. / 3 * HitLocation.Y;
-	//return AxialToOffset(q, r);
 }
 
 TMap<FIntPoint, FTileData> AHexagonalGrid::GetTileDataMap() {
