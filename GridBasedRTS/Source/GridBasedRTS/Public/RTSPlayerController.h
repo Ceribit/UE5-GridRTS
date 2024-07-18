@@ -14,4 +14,20 @@ class GRIDBASEDRTS_API ARTSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	ARTSPlayerController();
+
+	virtual void BeginPlay() override;
+
+	virtual void SetupInputComponent() override;
+
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void LeftMouseButtonPressed();
+
+	UFUNCTION()
+	void LeftMouseButtonReleased();
+
+	bool IsLeftMousePressed;
 };
