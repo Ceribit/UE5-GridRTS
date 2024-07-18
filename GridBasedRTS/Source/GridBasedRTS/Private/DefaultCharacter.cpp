@@ -40,3 +40,12 @@ void ADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 }
 
+void ADefaultCharacter::SelectUnit()
+{
+	SelectionDecal->SetVisibility(true);
+}
+
+void ADefaultCharacter::DeselectUnit()
+{
+	SelectionDecal->SetVisibility(false);
+}

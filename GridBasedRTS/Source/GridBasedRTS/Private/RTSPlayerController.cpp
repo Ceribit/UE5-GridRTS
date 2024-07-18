@@ -2,20 +2,26 @@
 
 
 #include "RTSPlayerController.h"
+#include "MarqueeHUD.h"
+#include "SelectInterface.h"
 
 ARTSPlayerController::ARTSPlayerController() {
-	//Super::APlayerController();
+
 }
 
 void ARTSPlayerController::BeginPlay() {
-	Super::BeginPlay();
-
+	APlayerController::Super::BeginPlay();
 }
+
+
+
 void ARTSPlayerController::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	APlayerController::Super::Tick(DeltaTime);
 	if (IsLeftMousePressed) {
-		UE_LOG(LogTemp, Warning, TEXT("Left Mouse Button Pressed!"));
+		if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
+			hud->MarqueeHeld();
+		}
 	}
 
 }
@@ -24,15 +30,20 @@ void ARTSPlayerController::Tick(float DeltaTime)
 
 void ARTSPlayerController::LeftMouseButtonPressed() {
 	IsLeftMousePressed = true;
+	if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
+		hud->MarqueePressed();
+	}
 }
 
 void ARTSPlayerController::LeftMouseButtonReleased() {
 	IsLeftMousePressed = false;
-	UE_LOG(LogTemp, Warning, TEXT("Left Mouse Button Released!"));
+	if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
+		hud->MarqueeReleased();
+	}
 }
 
 void ARTSPlayerController::SetupInputComponent() {
-	Super::SetupInputComponent();
+	ARTSPlayerController::Super::SetupInputComponent();
 
 	InputComponent->BindKey(EKeys::LeftMouseButton, IE_Pressed, this, &ARTSPlayerController::LeftMouseButtonPressed);
 	InputComponent->BindKey(EKeys::LeftMouseButton, IE_Released, this, &ARTSPlayerController::LeftMouseButtonReleased);

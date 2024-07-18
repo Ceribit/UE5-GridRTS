@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "SelectInterface.h"
 #include "RTSPlayerController.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class GRIDBASEDRTS_API ARTSPlayerController : public APlayerController
+UCLASS(Blueprintable)
+class ARTSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
@@ -23,6 +24,14 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+
+	//virtual void MarqueePressed() override;
+	//virtual void MarqueeReleased() override;
+	//virtual void MarqueeHeld() override;
+
+
+	//class RTSInterface : public UBaseInterface {
+	//};
 	UFUNCTION()
 	void LeftMouseButtonPressed();
 
@@ -30,4 +39,5 @@ public:
 	void LeftMouseButtonReleased();
 
 	bool IsLeftMousePressed;
+
 };
