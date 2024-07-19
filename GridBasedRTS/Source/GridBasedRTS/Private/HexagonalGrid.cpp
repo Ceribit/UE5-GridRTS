@@ -12,7 +12,9 @@ AHexagonalGrid::AHexagonalGrid()
 
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMeshComponent"));
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Movable);
-	InstancedStaticMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel1, ECollisionResponse::ECR_Block);
+	InstancedStaticMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel2, ECollisionResponse::ECR_Block);
+	InstancedStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndProbe);
+
 	//InstancedStaticMeshComponent->SetStaticMesh(StaticMesh.object);
 	//GridInfo = FVector(MapSize, TileSize, 0.f);
 
@@ -113,12 +115,18 @@ FVector AHexagonalGrid::OffsetToAxial(FIntPoint Index) {
 	return FVector(0, 0, 0);
 }
 
+FVector AHexagonalGrid::GetTilePositionFromOffset(FIntPoint Index) {
+	int x = Index[0];
+	int y = Index[1];
+	float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3) / 2;
+	return FVector(TileScale * TILE_SIZE * x * 1.5, TileScale * TILE_SIZE * y * sqrt(3) - Offset, 0.1f);
+
+}
 // Even-Q
 void AHexagonalGrid::AddTile(FIntPoint Index) {
 	int x = Index[0];
 	int y = Index[1];
-	float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3)/2;
-	FTransform transform(FRotator(0.f, 90.f, 0.f), FVector(TileScale * TILE_SIZE * x * 1.5, TileScale* TILE_SIZE * y * sqrt(3)-Offset, 0.1f), FVector(TileScale, TileScale, 1.f));
+	FTransform transform(FRotator(0.f, 90.f, 0.f), GetTilePositionFromOffset(Index), FVector(TileScale, TileScale, 1.f));
 	TileDataMap.Add(FIntPoint(x, y),FTileData(FIntPoint(x, y), transform));
 	InstancedStaticMeshComponent->AddInstance(transform);
 

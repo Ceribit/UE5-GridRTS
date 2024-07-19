@@ -5,6 +5,7 @@
 #include "MarqueeHUD.h"
 #include "DefaultCharacter.h"
 #include "SelectInterface.h"
+#include <algorithm>
 
 ARTSPlayerController::ARTSPlayerController() {
 
@@ -45,20 +46,23 @@ void ARTSPlayerController::LeftMouseButtonReleased() {
 
 void ARTSPlayerController::RightMouseButtonPressed() {
 	FHitResult HitResult;
-	if (GetHitResultUnderCursor(ECollisionChannel::ECC_EngineTraceChannel4, false, HitResult)) {
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_EngineTraceChannel2, true, HitResult)) {
 		FVector HitLocation = HitResult.Location;
+		UE_LOG(LogTemp, Warning, TEXT("Actor hit:  %s"), *HitResult.GetActor()->GetName());
+		if (AHexagonalGrid* grid = Cast<AHexagonalGrid>(HitResult.GetActor())) {
+			FIntPoint Index = grid->GetTileIndexFromMousePosition(HitLocation);
+			HitLocation = grid->TileDataMap.Find(Index)->Transform.GetLocation();
+		}
+
 		if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
 			TArray<ADefaultCharacter*> SelectedActors = hud->GrabSelectedUnits();
-			int LocationXOffset = 0;
-			int LocationYOffset = 0
-			;
+			int TotalUnits = SelectedActors.Num();
+			int GridLength = std::max(3,static_cast<int>(ceil(sqrt(TotalUnits))));
 			for (ADefaultCharacter* SelectedCharacter : SelectedActors) {
+				int LocationXOffset = 0;
+				int LocationYOffset = 0;
+
 				SelectedCharacter->UnitMoveCommand(FVector(HitLocation.X + LocationXOffset, HitLocation.Y + LocationYOffset, HitLocation.Z));
-				LocationYOffset += 40;
-				if (LocationYOffset == 160) {
-					LocationYOffset = 0;
-					LocationXOffset += 40;
-				}
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Movement Location at: %s"), *HitLocation.ToString());

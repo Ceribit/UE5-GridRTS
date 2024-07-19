@@ -53,6 +53,8 @@ public:
 	void AddTile(FIntPoint Index);
 	FVector OffsetToAxial(FIntPoint index);
 	FIntPoint AxialToOffset(int q, int r);
+	FVector GetTilePositionFromOffset(FIntPoint Index);
+
 
 
 };
