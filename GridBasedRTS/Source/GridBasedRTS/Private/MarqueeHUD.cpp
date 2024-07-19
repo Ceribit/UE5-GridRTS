@@ -2,6 +2,7 @@
 
 
 #include "MarqueeHUD.h"
+#include "DefaultCharacter.h"
 
 AMarqueeHUD::AMarqueeHUD() {
 
@@ -30,6 +31,9 @@ void AMarqueeHUD::MarqueeReleased() {
 	SelectedActors.Reset();
 }
 
+TArray<ADefaultCharacter*> AMarqueeHUD::GrabSelectedUnits() {
+	return SelectedActors;
+}
 
 void AMarqueeHUD::DrawHUD(){
 	if (IsDrawing) {

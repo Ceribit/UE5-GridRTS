@@ -39,9 +39,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	int height;
-	int width;
-	int MapSize = 1;
+	int MapSize = 5;
 	const float TILE_SIZE = 100.f;
 	float TileScale = 1.f;
 

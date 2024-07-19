@@ -28,8 +28,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Interface Overrides
 	virtual void SelectUnit() override;
 	virtual void DeselectUnit() override;
+	virtual void UnitMoveCommand(FVector Location) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	UDecalComponent* SelectionDecal;

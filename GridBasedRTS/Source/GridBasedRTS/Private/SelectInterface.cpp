@@ -10,5 +10,6 @@ void ISelectInterface::MarqueeReleased() {}
 void ISelectInterface::MarqueeHeld() {}
 void ISelectInterface::SelectUnit() {}
 void ISelectInterface::DeselectUnit() {}
-
+void ISelectInterface::UnitMoveCommand(FVector Location) {}
+TArray<ADefaultCharacter*> ISelectInterface::GrabSelectedUnits() { return TArray<ADefaultCharacter*>(); }
 

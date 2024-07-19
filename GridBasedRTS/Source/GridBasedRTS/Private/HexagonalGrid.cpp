@@ -19,8 +19,6 @@ AHexagonalGrid::AHexagonalGrid()
 	TileScale = 1.f;
 	GenerateGrid();
 
-	height = 4;
-	width = 4;
 	SetRootComponent(InstancedStaticMeshComponent);
 }
 

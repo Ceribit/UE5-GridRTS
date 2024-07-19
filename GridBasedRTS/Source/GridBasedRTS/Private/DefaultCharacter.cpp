@@ -2,6 +2,7 @@
 
 
 #include "DefaultCharacter.h"
+#include "AIController.h"
 
 // Sets default values
 ADefaultCharacter::ADefaultCharacter()
@@ -14,8 +15,11 @@ ADefaultCharacter::ADefaultCharacter()
 	SelectionDecal->SetRelativeLocation(FVector(0.f, 0.0f, -70.f));
 	SelectionDecal->SetRelativeScale3D(FVector(1.f, 1.f, 2.f));
 	//SelectionDecal->DecalSize = FVector(30.f, 30.f, 15.f);
+
 	SelectionDecal->SetupAttachment(RootComponent);
 
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel2, ECollisionResponse::ECR_Block);
+	
 	GetMesh()->bReceivesDecals = false;
 }
 
@@ -40,6 +44,7 @@ void ADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 }
 
+// Interface Implementations
 void ADefaultCharacter::SelectUnit()
 {
 	SelectionDecal->SetVisibility(true);
@@ -48,4 +53,10 @@ void ADefaultCharacter::SelectUnit()
 void ADefaultCharacter::DeselectUnit()
 {
 	SelectionDecal->SetVisibility(false);
+}
+
+void ADefaultCharacter::UnitMoveCommand(FVector Location) {
+	AAIController* controller =  GetController<AAIController>();
+	controller->StopMovement();
+	controller->MoveToLocation(Location);
 }

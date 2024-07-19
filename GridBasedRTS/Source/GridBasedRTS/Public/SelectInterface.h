@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "SelectInterface.generated.h"
 
+class ADefaultCharacter;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class USelectInterface : public UInterface
@@ -27,4 +29,8 @@ public:
 	virtual void MarqueeHeld();
 	virtual void SelectUnit();
 	virtual void DeselectUnit();
+	virtual void UnitMoveCommand(FVector Location);
+	virtual TArray<ADefaultCharacter*> GrabSelectedUnits();
+
+
 };

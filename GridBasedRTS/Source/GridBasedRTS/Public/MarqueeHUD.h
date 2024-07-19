@@ -5,12 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "SelectInterface.h"
-#include "DefaultCharacter.h"
 #include "MarqueeHUD.generated.h"
 
+
+class ADefaultCharacter;
 /**
  * 
  */
+
 UCLASS()
 class GRIDBASEDRTS_API AMarqueeHUD : public AHUD, public ISelectInterface
 {
@@ -22,6 +24,7 @@ public:
 	virtual void MarqueeReleased() override;
 	virtual void MarqueeHeld() override;
 	virtual void DrawHUD() override;
+	virtual TArray<ADefaultCharacter*> GrabSelectedUnits() override;
 
 
 	bool IsDrawing = false;

@@ -11,7 +11,7 @@
  * 
  */
 UCLASS(Blueprintable)
-class ARTSPlayerController : public APlayerController
+class GRIDBASEDRTS_API ARTSPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
@@ -37,6 +37,9 @@ public:
 
 	UFUNCTION()
 	void LeftMouseButtonReleased();
+
+	UFUNCTION()
+	void RightMouseButtonPressed();
 
 	bool IsLeftMousePressed;
 
