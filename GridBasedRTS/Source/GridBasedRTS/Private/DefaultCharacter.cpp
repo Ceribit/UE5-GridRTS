@@ -57,6 +57,6 @@ void ADefaultCharacter::DeselectUnit()
 
 void ADefaultCharacter::UnitMoveCommand(FVector Location) {
 	AAIController* controller =  GetController<AAIController>();
-	controller->StopMovement();
+	//controller->StopMovement();
 	controller->MoveToLocation(Location);
 }
