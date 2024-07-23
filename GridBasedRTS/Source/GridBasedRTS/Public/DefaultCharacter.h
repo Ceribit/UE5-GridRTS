@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/DecalComponent.h"
+#include "Components/WidgetComponent.h"
 #include "SelectInterface.h"
+#include "UnitData.h"
+#include "HealthBarWidget.h"
 
 #include "DefaultCharacter.generated.h"
 
@@ -15,14 +18,16 @@ class GRIDBASEDRTS_API ADefaultCharacter : public ACharacter, public ISelectInte
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ADefaultCharacter();
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
+	// Sets default values for this character's properties
+	ADefaultCharacter();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
@@ -32,6 +37,19 @@ public:
 	virtual void SelectUnit() override;
 	virtual void DeselectUnit() override;
 	virtual void UnitMoveCommand(FVector Location) override;
+
+	// Unit Data
+	FUnitData UnitData;
+
+	virtual void InitializeUnitData();
+	float GetHealth() const;
+	float getMaxHealth() const;
+	void SetHealth(float const NewHealth);
+
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess = "true"))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget), Category = "Character")
+	UWidgetComponent* WidgetComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character")
 	UDecalComponent* SelectionDecal;
