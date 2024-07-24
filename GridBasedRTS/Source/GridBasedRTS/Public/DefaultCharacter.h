@@ -37,7 +37,7 @@ public:
 	virtual void SelectUnit() override;
 	virtual void DeselectUnit() override;
 	virtual void UnitMoveCommand(FVector Location) override;
-
+	
 	// Unit Data
 	FUnitData UnitData;
 

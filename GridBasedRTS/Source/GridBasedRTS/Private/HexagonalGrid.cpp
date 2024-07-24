@@ -4,6 +4,39 @@
 #include "HexagonalGrid.h"
 #include <algorithm>
 
+/*
+	Utility Functions
+*/
+TArray<FIntPoint> AxialDirections({ FIntPoint(1,0) , FIntPoint(1,-1), FIntPoint(0,-1), FIntPoint(-1,0), FIntPoint(-1,+1), FIntPoint(0,1) });
+
+FIntPoint AHexagonalGrid::GetOffsetNeighbor(FIntPoint Hex, FIntPoint Direction) {
+	int Parity = Hex.Y & 1;
+	//FIntPoint Diff = DirectionDifferences.Find(Parity).Find(Direction);
+	return Direction;
+}
+
+// TODO: Convert into a utility library
+FIntPoint hexToFlatCoordinates(FVector hex)
+{
+	FIntPoint coordinates;
+	coordinates.X = hex.X;
+	coordinates.Y = hex.Z;
+	return coordinates;
+}
+
+// TODO: Convert into a utility library
+FIntPoint axialToOffsetCoordinates(FIntPoint axial)
+{
+	FIntPoint offset;
+	offset.X = axial.X;
+	offset.Y = axial.Y + ceilf((float)axial.X / 2.0);
+	return offset;
+}
+
+/*
+	End Utility Functions
+*/
+
 // Sets default values
 AHexagonalGrid::AHexagonalGrid()
 {
@@ -13,7 +46,8 @@ AHexagonalGrid::AHexagonalGrid()
 	InstancedStaticMeshComponent = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("InstancedStaticMeshComponent"));
 	InstancedStaticMeshComponent->SetMobility(EComponentMobility::Movable);
 	InstancedStaticMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel2, ECollisionResponse::ECR_Block);
-	InstancedStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndProbe);
+	//InstancedStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndProbe);
+	InstancedStaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 
 	//InstancedStaticMeshComponent->SetStaticMesh(StaticMesh.object);
 	//GridInfo = FVector(MapSize, TileSize, 0.f);
@@ -41,23 +75,7 @@ FIntPoint AxialRound(float x, float y) {
 	}
 }
 
-// TODO: Convert into a utility library
-FIntPoint hexToFlatCoordinates(FVector hex)
-{
-	FIntPoint coordinates;
-	coordinates.X = hex.X;
-	coordinates.Y = hex.Z;
-	return coordinates;
-}
 
-// TODO: Convert into a utility library
-FIntPoint axialToOffsetCoordinates(FIntPoint axial)
-{
-	FIntPoint offset;
-	offset.X = axial.X;
-	offset.Y = axial.Y + ceilf((float)axial.X / 2.0);
-	return offset;
-}
 
 FIntPoint AHexagonalGrid::GetTileIndexFromMousePosition(FVector HitLocation) {
 	float radius = TILE_SIZE * TileScale;
@@ -98,6 +116,7 @@ void AHexagonalGrid::GenerateGrid()
 
 		}
 	}
+	/* Rectangular Grid */
 	//for (int x = -MapSize; x <= MapSize; x++) {
 	//	for (int y = -MapSize; y <= MapSize; y++){
 	//		AddTile(x,y);
@@ -120,7 +139,6 @@ FVector AHexagonalGrid::GetTilePositionFromOffset(FIntPoint Index) {
 	int y = Index[1];
 	float Offset = ((int)x % 2 == 0) ? 0.f : TileScale * TILE_SIZE * sqrt(3) / 2;
 	return FVector(TileScale * TILE_SIZE * x * 1.5, TileScale * TILE_SIZE * y * sqrt(3) - Offset, 0.1f);
-
 }
 // Even-Q
 void AHexagonalGrid::AddTile(FIntPoint Index) {

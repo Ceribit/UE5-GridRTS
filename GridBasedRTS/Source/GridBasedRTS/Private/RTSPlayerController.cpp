@@ -48,24 +48,32 @@ void ARTSPlayerController::RightMouseButtonPressed() {
 	FHitResult HitResult;
 	if (GetHitResultUnderCursor(ECollisionChannel::ECC_EngineTraceChannel2, true, HitResult)) {
 		FVector HitLocation = HitResult.Location;
+
+
 		UE_LOG(LogTemp, Warning, TEXT("Actor hit:  %s"), *HitResult.GetActor()->GetName());
 		if (AHexagonalGrid* grid = Cast<AHexagonalGrid>(HitResult.GetActor())) {
 			FIntPoint Index = grid->GetTileIndexFromMousePosition(HitLocation);
 			HitLocation = grid->TileDataMap.Find(Index)->Transform.GetLocation();
-		}
 
-		if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
-			TArray<ADefaultCharacter*> SelectedActors = hud->GrabSelectedUnits();
-			int TotalUnits = SelectedActors.Num();
-			int GridLength = std::max(3,static_cast<int>(ceil(sqrt(TotalUnits))));
-			for (ADefaultCharacter* SelectedCharacter : SelectedActors) {
-				int LocationXOffset = 0;
-				int LocationYOffset = 0;
 
-				SelectedCharacter->UnitMoveCommand(FVector(HitLocation.X + LocationXOffset, HitLocation.Y + LocationYOffset, HitLocation.Z));
+			if (AMarqueeHUD* hud = Cast<AMarqueeHUD>(GetHUD())) {
+				TArray<ADefaultCharacter*> SelectedActors = hud->GrabSelectedUnits();
+				int TotalUnits = SelectedActors.Num();
+				int GridLength = std::max(3, static_cast<int>(ceil(sqrt(TotalUnits))));
+				for (ADefaultCharacter* SelectedCharacter : SelectedActors) {
+					int LocationXOffset = 0;
+					int LocationYOffset = 0;
+
+					FIntPoint UnitLocation = grid->GetTileIndexFromMousePosition(SelectedCharacter->GetActorLocation());
+					UE_LOG(LogTemp, Warning, TEXT("Moving Actor from {%d , %d}"), UnitLocation.X, UnitLocation.Y);
+
+					//SelectedCharacter->UnitMoveCommand(FVector(HitLocation.X + LocationXOffset, HitLocation.Y + LocationYOffset, HitLocation.Z));
+				}
 			}
+			FIntPoint Destination = grid->GetTileIndexFromMousePosition(HitLocation);
+
+			UE_LOG(LogTemp, Warning, TEXT("Moving Actors To at: %s {%d,%d}"), *HitLocation.ToString(), Destination.X, Destination.Y);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Movement Location at: %s"), *HitLocation.ToString());
 
 	}
 }

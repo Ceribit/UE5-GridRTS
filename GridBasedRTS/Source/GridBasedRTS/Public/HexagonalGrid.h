@@ -54,7 +54,7 @@ public:
 	FVector OffsetToAxial(FIntPoint index);
 	FIntPoint AxialToOffset(int q, int r);
 	FVector GetTilePositionFromOffset(FIntPoint Index);
-
+	FIntPoint GetOffsetNeighbor(FIntPoint Hex, FIntPoint Direction);
 
 
 };
