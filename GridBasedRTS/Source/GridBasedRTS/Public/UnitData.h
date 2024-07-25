@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TileState.h"
+#include "Engine/DataTable.h"
 #include "UnitData.generated.h"
 
 /**
  *
  */
 USTRUCT(BlueprintType)
-struct FUnitData
+struct FUnitData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -19,13 +20,19 @@ public:
 	FUnitData();
 	FUnitData(FString Name, FString Team, int Health);
 
-	int Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team Data")
 	int MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team Data")
+	FString Team;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team Data")
+	FColor TeamColor;
+
+	int Health;
 	int Speed;
 	int Attack;
 	
 	FString Name;
-	FString Team;
+
 
 	void SetHealth(float const value);
 

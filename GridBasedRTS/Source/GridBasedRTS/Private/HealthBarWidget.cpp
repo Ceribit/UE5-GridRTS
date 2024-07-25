@@ -10,3 +10,8 @@ void UHealthBarWidget::NativeConstruct() {
 void UHealthBarWidget::SetBarValuePercent(float const value) {
 	HealthValue->SetPercent(value);
 }
+
+void UHealthBarWidget::SetBarColor(FColor Color) {
+	BarColor = Color;
+	HealthValue->SetFillColorAndOpacity(Color);
+}

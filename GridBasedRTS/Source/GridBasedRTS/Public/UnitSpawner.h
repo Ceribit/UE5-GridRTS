@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "HexagonalGrid.h"
 #include "DefaultCharacter.h"
+#include "Engine/DataTable.h"
 #include "UnitSpawner.generated.h"
 
 UCLASS()
@@ -24,6 +25,8 @@ protected:
 	FIntPoint SpawnLocation;
 	
 	AHexagonalGrid* Grid;
+
+	UDataTable* DataTable;
 
 	UFUNCTION(BlueprintCallable)
 	void CreateUnit();

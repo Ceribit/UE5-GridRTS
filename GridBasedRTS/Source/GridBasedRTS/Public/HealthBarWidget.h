@@ -18,8 +18,11 @@ class GRIDBASEDRTS_API UHealthBarWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 	void SetBarValuePercent(float const value);
+	void SetBarColor(FColor Color);
+	FColor BarColor;
 
 //private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* HealthValue;
+
 };

@@ -6,6 +6,7 @@ FUnitData::FUnitData() {
 	this->Team = "None";
 	this->Health = 100;
 	this->MaxHealth = 100;
+	this->TeamColor = FColor(25.f, 10.f, 50.f, 1.f);
 }
 
 FUnitData::FUnitData(FString Name, FString Team, int Health) {

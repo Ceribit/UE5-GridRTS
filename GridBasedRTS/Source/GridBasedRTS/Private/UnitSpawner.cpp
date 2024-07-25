@@ -2,20 +2,22 @@
 
 
 #include "UnitSpawner.h"
+#include "UnitData.h"
 
 // Sets default values
 AUnitSpawner::AUnitSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	static ConstructorHelpers::FObjectFinder<UDataTable> DataTableObject(TEXT("DataTable'/Game/Core/Unit/DT_UnitData.DT_UnitData'"));
+	DataTable = DataTableObject.Object;
 }
 
 // Called when the game starts or when spawned
 void AUnitSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -38,7 +40,21 @@ void AUnitSpawner::CreateUnit() {
 	FVector Location(0.f, 0.f, 0.f);
 	FRotator Rotation(0.f, 0.f, 0.f);
 	ADefaultCharacter* NewCharacter = Cast<ADefaultCharacter>(GetWorld()->SpawnActor(UnitClass,&Location, &Rotation));
+
+
+
 	if (NewCharacter) {
+		if (DataTable)
+		{
+			FUnitData* RowData = DataTable->FindRow<FUnitData>("DEFAULT", "");
+			if (RowData)
+			{
+				NewCharacter->SetUnitData(*RowData);
+			}
+		}
+
+
+		NewCharacter->UpdateHealthBar();
 		NewCharacter->SpawnDefaultController();
 		Location = Grid->GetTilePositionFromOffset(SpawnLocation);
 		NewCharacter->UnitMoveCommand(Location);

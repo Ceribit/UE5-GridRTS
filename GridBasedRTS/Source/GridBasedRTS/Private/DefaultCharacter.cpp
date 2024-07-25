@@ -12,19 +12,10 @@ ADefaultCharacter::ADefaultCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SelectionDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("SelectionDecal"));
-	SelectionDecal->SetRelativeRotation(FRotator(0.f, 90.0f, 0.f));
-	SelectionDecal->SetRelativeLocation(FVector(0.f, 0.0f, -70.f));
-	SelectionDecal->SetRelativeScale3D(FVector(1.f, 1.f, 2.f));
-	SelectionDecal->SetupAttachment(RootComponent);
-	//SelectionDecal->DecalSize = FVector(30.f, 30.f, 15.f);
-
-
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_EngineTraceChannel2, ECollisionResponse::ECR_Block);
-	
-	GetMesh()->bReceivesDecals = false;
-
-	InitializeUnitData();
+	UnitData = FUnitData();
+	InitializeUnitDecal();
+	InitializeHealthBar();
 }
 
 // Called when the game starts or when spawned
@@ -69,8 +60,14 @@ void ADefaultCharacter::UnitMoveCommand(FVector Location) {
 	controller->MoveToLocation(Location);
 }
 
-void ADefaultCharacter::InitializeUnitData() {
+void ADefaultCharacter::SetUnitData(FUnitData NewUnitData) {
+	UnitData = NewUnitData;
+}
+
+void ADefaultCharacter::InitializeHealthBar() {
+	
 	UnitData = FUnitData();
+
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"));
 
 	if (WidgetComponent) {
@@ -85,6 +82,7 @@ void ADefaultCharacter::InitializeUnitData() {
 			WidgetComponent->SetWidgetClass((WidgetClass.Class));
 			if (auto const widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
 				widget->SetBarValuePercent(100.f);
+				widget->SetBarColor(UnitData.TeamColor);
 			}
 		}
 		else {
@@ -92,6 +90,23 @@ void ADefaultCharacter::InitializeUnitData() {
 		}
 	}
 
+}
+void ADefaultCharacter::UpdateHealthBar() {
+	if (auto const widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
+		UE_LOG(LogTemp, Warning, TEXT("Setting color"));
+		widget->SetBarValuePercent(100.f);
+		widget->SetBarColor(UnitData.TeamColor);
+	}
+}
+
+void ADefaultCharacter::InitializeUnitDecal() {
+	SelectionDecal = CreateDefaultSubobject<UDecalComponent>(TEXT("SelectionDecal"));
+	SelectionDecal->SetRelativeRotation(FRotator(0.f, 90.0f, 0.f));
+	SelectionDecal->SetRelativeLocation(FVector(0.f, 0.0f, -70.f));
+	SelectionDecal->SetRelativeScale3D(FVector(1.f, 1.f, 2.f));
+	SelectionDecal->SetupAttachment(RootComponent);
+	//SelectionDecal->DecalSize = FVector(30.f, 30.f, 15.f);
+	GetMesh()->bReceivesDecals = false;
 }
 
 float ADefaultCharacter::GetHealth() const

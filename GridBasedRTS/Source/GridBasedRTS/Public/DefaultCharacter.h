@@ -41,11 +41,14 @@ public:
 	// Unit Data
 	FUnitData UnitData;
 
-	virtual void InitializeUnitData();
+	virtual void InitializeUnitDecal();
+	virtual void InitializeHealthBar();
+	virtual void UpdateHealthBar();
+
 	float GetHealth() const;
 	float getMaxHealth() const;
 	void SetHealth(float const NewHealth);
-
+	void SetUnitData(FUnitData UnitData);
 	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget, AllowPrivateAccess = "true"))
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget), Category = "Character")
