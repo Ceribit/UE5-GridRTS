@@ -67,7 +67,7 @@ void ARTSPlayerController::RightMouseButtonPressed() {
 					FIntPoint UnitLocation = grid->GetTileIndexFromMousePosition(SelectedCharacter->GetActorLocation());
 					UE_LOG(LogTemp, Warning, TEXT("Moving Actor from {%d , %d}"), UnitLocation.X, UnitLocation.Y);
 
-					//SelectedCharacter->UnitMoveCommand(FVector(HitLocation.X + LocationXOffset, HitLocation.Y + LocationYOffset, HitLocation.Z));
+					SelectedCharacter->UnitMoveCommand(FVector(HitLocation.X + LocationXOffset, HitLocation.Y + LocationYOffset, HitLocation.Z));
 				}
 			}
 			FIntPoint Destination = grid->GetTileIndexFromMousePosition(HitLocation);

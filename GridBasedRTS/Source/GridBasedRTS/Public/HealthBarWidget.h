@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
+#include "Components/Border.h"
 #include "HealthBarWidget.generated.h"
 
 /**
@@ -19,10 +20,15 @@ public:
 	virtual void NativeConstruct() override;
 	void SetBarValuePercent(float const value);
 	void SetBarColor(FColor Color);
-	FColor BarColor;
 
 //private:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	UProgressBar* HealthValue;
+
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+	UBorder* HealthValueBorder;
+
+	UPROPERTY(BlueprintReadWrite)
+	FLinearColor BarColor;
 
 };

@@ -64,10 +64,15 @@ void ADefaultCharacter::SetUnitData(FUnitData NewUnitData) {
 	UnitData = NewUnitData;
 }
 
+ADefaultCharacter* ADefaultCharacter::MAKE(FUnitData UnitData) {
+	ADefaultCharacter* NewCharacter = NewObject<ADefaultCharacter>();
+	NewCharacter->SetUnitData(UnitData);
+	return NewCharacter;
+}
+
+
 void ADefaultCharacter::InitializeHealthBar() {
 	
-	UnitData = FUnitData();
-
 	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"));
 
 	if (WidgetComponent) {
@@ -80,9 +85,9 @@ void ADefaultCharacter::InitializeHealthBar() {
 		static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClass{ TEXT("/Game/Core/Player/BP_HealthBar") };
 		if (WidgetClass.Succeeded()) {
 			WidgetComponent->SetWidgetClass((WidgetClass.Class));
-			if (auto const widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
+			if (auto widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
 				widget->SetBarValuePercent(100.f);
-				widget->SetBarColor(UnitData.TeamColor);
+				//widget->SetBarColor(FColor(0.1f,0.2f,0.3f,1.f));
 			}
 		}
 		else {
@@ -92,9 +97,8 @@ void ADefaultCharacter::InitializeHealthBar() {
 
 }
 void ADefaultCharacter::UpdateHealthBar() {
-	if (auto const widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
-		UE_LOG(LogTemp, Warning, TEXT("Setting color"));
-		widget->SetBarValuePercent(100.f);
+	if (auto widget = Cast<UHealthBarWidget>(WidgetComponent->GetUserWidgetObject())) {
+		UE_LOG(LogTemp, Warning, TEXT("Setting color to %s"), *UnitData.TeamColor.ToString());
 		widget->SetBarColor(UnitData.TeamColor);
 	}
 }
@@ -105,6 +109,9 @@ void ADefaultCharacter::InitializeUnitDecal() {
 	SelectionDecal->SetRelativeLocation(FVector(0.f, 0.0f, -70.f));
 	SelectionDecal->SetRelativeScale3D(FVector(1.f, 1.f, 2.f));
 	SelectionDecal->SetupAttachment(RootComponent);
+	SelectionDecal->SetVisibility(false);
+
+
 	//SelectionDecal->DecalSize = FVector(30.f, 30.f, 15.f);
 	GetMesh()->bReceivesDecals = false;
 }

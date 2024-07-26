@@ -27,6 +27,9 @@ protected:
 public:	
 	// Sets default values for this character's properties
 	ADefaultCharacter();
+	ADefaultCharacter(FObjectInitializer& ObjectInitializer);
+
+	static ADefaultCharacter* MAKE(FUnitData UnitData);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

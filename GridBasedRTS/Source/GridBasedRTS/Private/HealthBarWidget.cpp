@@ -12,6 +12,10 @@ void UHealthBarWidget::SetBarValuePercent(float const value) {
 }
 
 void UHealthBarWidget::SetBarColor(FColor Color) {
-	BarColor = Color;
-	HealthValue->SetFillColorAndOpacity(Color);
+	UE_LOG(LogTemp, Warning, TEXT("Setting color to %s"), *HealthValueBorder->GetContentColorAndOpacity().ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Setting color to %s"), *Color.ToString());
+
+	//BarColor = Color;
+	HealthValueBorder->SetContentColorAndOpacity(Color);
+	//HealthValueBorder->GetContentColorAndOpacity(Color);
 }

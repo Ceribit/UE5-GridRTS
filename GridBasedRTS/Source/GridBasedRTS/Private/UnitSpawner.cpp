@@ -39,24 +39,32 @@ void AUnitSpawner::SetUnitSpawnLocation(FIntPoint Index){
 void AUnitSpawner::CreateUnit() {
 	FVector Location(0.f, 0.f, 0.f);
 	FRotator Rotation(0.f, 0.f, 0.f);
-	ADefaultCharacter* NewCharacter = Cast<ADefaultCharacter>(GetWorld()->SpawnActor(UnitClass,&Location, &Rotation));
 
+
+
+	ADefaultCharacter* NewCharacter = Cast<ADefaultCharacter>(GetWorld()->SpawnActor(UnitClass, &Location, &Rotation));
+
+	NewCharacter->SetActorLocationAndRotation(Location, Rotation);
 
 
 	if (NewCharacter) {
+
 		if (DataTable)
 		{
-			FUnitData* RowData = DataTable->FindRow<FUnitData>("DEFAULT", "");
+			FUnitData* RowData = DataTable->FindRow<FUnitData>(FName(TeamName), "");
 			if (RowData)
 			{
 				NewCharacter->SetUnitData(*RowData);
 			}
 		}
 
-
 		NewCharacter->UpdateHealthBar();
 		NewCharacter->SpawnDefaultController();
 		Location = Grid->GetTilePositionFromOffset(SpawnLocation);
 		NewCharacter->UnitMoveCommand(Location);
 	}
+}
+
+void AUnitSpawner::SetTeam(FString NewTeamName) {
+	this->TeamName = NewTeamName;
 }

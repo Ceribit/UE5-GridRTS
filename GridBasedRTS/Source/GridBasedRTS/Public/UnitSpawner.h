@@ -18,12 +18,26 @@ public:
 	// Sets default values for this actor's properties
 	AUnitSpawner();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetGrid(AHexagonalGrid* Grid);
+
+	UFUNCTION(BlueprintCallable)
+	void SetUnitSpawnLocation(FIntPoint Index);
+
+	UFUNCTION(BlueprintCallable)
+	void SetTeam(FString NewTeamName);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	FIntPoint SpawnLocation;
 	
+	FString TeamName = "DEFAULT";
+
 	AHexagonalGrid* Grid;
 
 	UDataTable* DataTable;
@@ -34,14 +48,5 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unit Class")
 	TSubclassOf<ADefaultCharacter> UnitClass;
-	
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
-	UFUNCTION(BlueprintCallable)
-	void SetGrid(AHexagonalGrid* Grid);
-	
-	UFUNCTION(BlueprintCallable)
-	void SetUnitSpawnLocation(FIntPoint Index);
+
 };
